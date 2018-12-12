@@ -1,4 +1,4 @@
-package de.jnd;
+package de.jnd.hki;
 
 import static org.junit.Assert.assertTrue;
 
