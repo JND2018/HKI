@@ -82,7 +82,7 @@
             <archive>
               <manifest>
                 <addClasspath>true</addClasspath>
-                <mainClass>de.jnd.hki.App</mainClass>
+                <mainClass>de.jnd.hki.application.App</mainClass>
               </manifest>
             </archive>
           </configuration>
