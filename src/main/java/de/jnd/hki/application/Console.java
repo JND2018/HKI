@@ -7,12 +7,5 @@ public class Console {
 
 	public static void main(String[] args) {
 		log.info("Console app loaded.");
-		while (true){
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				log.error("Thread sleep failed",e);
-			}
-		}
 	}
 }
