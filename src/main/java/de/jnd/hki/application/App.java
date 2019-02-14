@@ -11,8 +11,11 @@ public class App {
 
     //mode=gui,console(default)
     public static void main(String[] args) {
-        Map<String, String> argsMap = BaseUtils.convertArgsToMap(args);
+        log.info("Debug: "+BaseUtils.isDebug());
+        log.info("Eclipse: "+BaseUtils.isEclipse());
+        log.info("IntelliJ: "+BaseUtils.isIntelliJ());
 
+        Map<String, String> argsMap = BaseUtils.convertArgsToMap(args);
         switch (argsMap.get("mode") == null ? "" : argsMap.get("mode")) {
             case "gui":
                 Gui.main(null);

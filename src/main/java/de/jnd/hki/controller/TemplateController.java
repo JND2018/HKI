@@ -1,5 +1,6 @@
 package de.jnd.hki.controller;
 
+import de.jnd.hki.model.ViewModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.VPos;
@@ -15,19 +16,37 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import org.apache.log4j.Logger;
 
-public class StartController {
+import java.io.File;
+import java.io.IOException;
 
-	private static Logger log = Logger.getLogger(StartController.class);
+public class TemplateController {
 
-	@FXML private FlowPane root;
+	private static Logger log = Logger.getLogger(TemplateController.class);
 
-	@FXML private AnchorPane topBar;
+	@FXML
+	private FlowPane root;
 
-	@FXML private Canvas calculatedNumberCnv;
+	@FXML
+	private AnchorPane topBar;
 
-	@FXML private Button switchInnterBtn;
+	@FXML
+	private Canvas calculatedNumberCnv;
 
-	@FXML private BorderPane insertionPoint;
+	@FXML
+	private Button loadImageBtn;
+
+	@FXML
+	private BorderPane innerPane;
+
+	@FXML
+	void onFileLoad(ActionEvent event) {
+		File file = BaseUtils.fileChose(ViewModel.getCurrentStage());
+		try {
+			switchNumber(NetworkController.testImage(file,ViewModel.getCurrentNetworkModel().getLoader(),ViewModel.getCurrentNetworkModel().getNetwork()));
+		} catch (IOException e) {
+			log.error("Failed at testing image.",e);
+		}
+	}
 
 	@FXML public void initialize() {
 

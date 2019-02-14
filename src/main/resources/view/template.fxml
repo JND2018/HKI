@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?scenebuilder-stylesheet stylesheet.css?>
+
+<FlowPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.jnd.hki.controller.TemplateController">
+    <stylesheets>
+        <URL value="@stylesheet.css" />
+    </stylesheets>
+    <children>
+      <AnchorPane fx:id="topBar" prefHeight="146.0" prefWidth="1280.0" styleClass="blackBorder">
+         <children>
+            <Canvas fx:id="calculatedNumberCnv" height="128.0" layoutX="1082.0" layoutY="6.0" styleClass="canvas" width="191.0" />
+            <HBox layoutX="8.0" layoutY="11.0" prefHeight="116.0" prefWidth="1071.0">
+               <children>
+                  <Button fx:id="loadImageBtn" contentDisplay="TOP" mnemonicParsing="false" onAction="#onFileLoad" prefHeight="0.0" prefWidth="120.0" text="Load Image" textAlignment="CENTER" wrapText="true">
+                     <HBox.margin>
+                        <Insets left="10.0" top="15.0" />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/add-new-document.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+      <BorderPane fx:id="innerPane" prefHeight="530.0" prefWidth="1280.0">
+         <center>
+            <Canvas height="518.0" width="1274.0" BorderPane.alignment="CENTER" />
+         </center></BorderPane>
+   </children>
+</FlowPane>

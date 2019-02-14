@@ -13,12 +13,8 @@ public class NetworkModel {
     public NetworkModel() {
     }
 
-    public NetworkModel(MultiLayerNetwork network, int height, int width, int channels, NativeImageLoader loader) {
+    public NetworkModel(MultiLayerNetwork network) {
         this.network = network;
-        this.height = height;
-        this.width = width;
-        this.channels = channels;
-        this.loader = loader;
     }
 
     public MultiLayerNetwork getNetwork() {

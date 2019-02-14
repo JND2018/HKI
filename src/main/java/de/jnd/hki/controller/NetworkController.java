@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,19 +45,13 @@ public class NetworkController {
     }};
 
 
-    public static MultiLayerNetwork loadNetwork(String path) {
-        try {
-            InputStream in = NetworkController.class.getResourceAsStream(path);
-            return ModelSerializer.restoreMultiLayerNetwork(in);
-        } catch (IOException e) {
-            log.error("Failed to loading Network.", e);
-        }
-        return null;
+    public static MultiLayerNetwork loadNetwork(String path) throws IOException {
+        return ModelSerializer.restoreMultiLayerNetwork(new File(path));
     }
 
-    public static void saveNetwork(MultiLayerNetwork network, String path, boolean deletePrev) {
-        try {
-            File file = new File(NetworkController.class.getClassLoader().getResource(path).getFile());
+    public static void saveNetwork(MultiLayerNetwork network, String path, boolean deletePrev) throws IOException {
+            File file = new File(path);
+            file.mkdirs();
             if (file.exists()) {
                 if (deletePrev) {
                     file.delete();
@@ -70,9 +63,6 @@ public class NetworkController {
                 ModelSerializer.writeModel(network, file, false);
 
             }
-        } catch (IOException e) {
-            log.error("Failed at loading the File", e);
-        }
     }
 
     public static MultiLayerConfiguration getNetworkConfigForMNIST(int seed, int inputs, int outputs, Map<Integer, InputPreProcessor> inputPreProcessorMap){
@@ -100,7 +90,7 @@ public class NetworkController {
         return conf;
     }
 
-    public static MultiLayerNetwork createNetwork() throws IOException {
+    public static MultiLayerNetwork createNetwork() {
         //number of rows and columns in the input pictures
         int numRows = 28;
         int numColumns = 28;
@@ -118,14 +108,11 @@ public class NetworkController {
 
         model.init();
 
-        trainNetwork(model,15,100);
-
-        NetworkController.saveNetwork(model, "networks/model.zip", true);
         return model;
     }
 
     public static int testImage(NativeImageLoader loader,MultiLayerNetwork model) throws IOException {
-        return testImage(BaseUtils.fileChose(),loader,model);
+        return testImage(BaseUtils.fileChose(null),loader,model);
     }
 
     public static int testImage(File file, NativeImageLoader loader,MultiLayerNetwork model) throws IOException {
