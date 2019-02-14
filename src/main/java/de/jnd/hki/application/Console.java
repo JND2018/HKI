@@ -1,6 +1,5 @@
 package de.jnd.hki.application;
 
-import de.jnd.hki.controller.BaseUtils;
 import de.jnd.hki.controller.NetworkController;
 import de.jnd.hki.model.NetworkModel;
 import org.apache.log4j.Logger;
@@ -15,8 +14,8 @@ public class Console {
         model.setNetwork(NetworkController.createNetwork());
         try {
 //            model.setNetwork(NetworkController.loadNetwork(BaseUtils.getTargetLocation()+"/networks/model25.zip"));
-            log.info(NetworkController.trainNetwork(model.getNetwork(),50,200));
-            NetworkController.saveNetwork(model.getNetwork(), BaseUtils.getTargetLocation()+"/networks/model50.zip",true);
+            log.info(NetworkController.trainNetwork(model.getNetwork(),1,200));
+//            NetworkController.saveNetwork(model.getNetwork(), BaseUtils.getTargetLocation()+"/networks/model50.zip",true);
 
 //            log.info(NetworkController.testImage(model.getLoader(), model.getNetwork()) + "");
 
