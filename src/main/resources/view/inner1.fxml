@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root type="javafx.scene.layout.BorderPane" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="530.0" prefWidth="1280.0" type="javafx.scene.layout.BorderPane" xmlns:fx="http://javafx.com/fxml/1">
     <center>
         <Label text="Hello from inner 1."/>
     </center>

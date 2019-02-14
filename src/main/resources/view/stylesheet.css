@@ -3,7 +3,7 @@
     -fx-background-radius: 5;
 }
 
-.button{
+.flatButton{
     -fx-border-color: transparent;
     -fx-border-width: 0;
     -fx-background-radius: 0;
@@ -13,11 +13,11 @@
     -fx-text-fill: #828282;
 }
 
-.button:hover{
+.flatButton:hover{
     -fx-background-color: rgba(168, 168, 168, 0.84);
 }
 
-.button:pressed {
+.flatButton:pressed {
     -fx-background-color: rgba(68, 68, 68, 0.84);
 }
 

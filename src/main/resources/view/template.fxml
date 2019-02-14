@@ -20,9 +20,9 @@
       <AnchorPane fx:id="topBar" prefHeight="146.0" prefWidth="1280.0" styleClass="blackBorder">
          <children>
             <Canvas fx:id="calculatedNumberCnv" height="128.0" layoutX="1082.0" layoutY="6.0" styleClass="canvas" width="191.0" />
-            <HBox layoutX="8.0" layoutY="11.0" prefHeight="116.0" prefWidth="1071.0">
+            <HBox layoutX="8.0" layoutY="11.0" prefHeight="116.0" prefWidth="938.0">
                <children>
-                  <Button fx:id="loadImageBtn" contentDisplay="TOP" mnemonicParsing="false" onAction="#onFileLoad" prefHeight="0.0" prefWidth="120.0" text="Load Image" textAlignment="CENTER" wrapText="true">
+                  <Button fx:id="loadImageBtn" contentDisplay="TOP" mnemonicParsing="false" onAction="#onFileLoad" prefHeight="0.0" prefWidth="120.0" styleClass="flatButton" text="Load Image" textAlignment="CENTER" wrapText="true">
                      <HBox.margin>
                         <Insets left="10.0" top="15.0" />
                      </HBox.margin>
@@ -34,7 +34,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="drawBtn" contentDisplay="TOP" mnemonicParsing="false" onAction="#onFileLoad" prefHeight="0.0" prefWidth="120.0" text="Draw" textAlignment="CENTER" wrapText="true">
+                  <Button fx:id="drawBtn" contentDisplay="TOP" mnemonicParsing="false" onAction="#onFileLoad" prefHeight="0.0" prefWidth="120.0" styleClass="flatButton" text="Draw" textAlignment="CENTER" wrapText="true">
                      <graphic>
                         <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -46,13 +46,22 @@
                         <Insets left="10.0" top="15.0" />
                      </HBox.margin>
                   </Button>
+                  <Button fx:id="trainBtn" contentDisplay="TOP" mnemonicParsing="false" onAction="#onTrainNetwork" prefHeight="0.0" prefWidth="120.0" styleClass="flatButton" text="Training" textAlignment="CENTER" wrapText="true">
+                     <graphic>
+                        <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/gym.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets left="10.0" top="15.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
             </HBox>
          </children>
       </AnchorPane>
-      <BorderPane fx:id="innerPane" prefHeight="530.0" prefWidth="1280.0">
-         <center>
-            <Canvas height="518.0" width="1274.0" BorderPane.alignment="CENTER" />
-         </center></BorderPane>
+      <BorderPane fx:id="innerPane" prefHeight="530.0" prefWidth="1280.0" />
    </children>
 </FlowPane>

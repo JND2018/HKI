@@ -64,7 +64,7 @@ public class NetworkController {
             ModelSerializer.writeModel(network, file, false);
 
         }
-        log.info("Network saved");
+        log.info(String.format("Network saved under %s",file.getAbsolutePath()));
     }
 
     public static MultiLayerConfiguration getNetworkConfigForMNIST(int seed, int inputs, int outputs, Map<Integer, InputPreProcessor> inputPreProcessorMap) {
@@ -173,7 +173,7 @@ public class NetworkController {
         // in more complex scenarios, a confusion matrix is quite helpful
         strBuilder.append("\n" + evaluation.confusionToString());
 
-        log.info(String.format("Network trained: %sms",stopWatch.getNanoTime()));
+        log.info(String.format("Network trained: %s seconds",stopWatch.getTime()/1000));
         return strBuilder;
     }
 }

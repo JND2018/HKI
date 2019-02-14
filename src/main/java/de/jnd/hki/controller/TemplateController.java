@@ -41,31 +41,26 @@ public class TemplateController {
     private BorderPane innerPane;
 
     @FXML
+    private Button trainBtn;
+
+
+    @FXML
+    public void initialize() {
+        topBar.prefWidthProperty().bind(root.widthProperty());
+        switchNumber(0);
+    }
+
+    @FXML
     void onFileLoad(ActionEvent event) {
-
-        try {
-            FXMLLoader outerLoader = new FXMLLoader(Gui.class.getClassLoader().getResource("view/inner1.fxml"));
-            outerLoader.setRoot(innerPane);
-            innerPane = outerLoader.load();
-        } catch (IOException e) {
-            log.error("Failed at loading inner", e);
-        }
-
         File file = BaseUtils.fileChose(ViewModel.getCurrentStage());
 
         try {
             if (file != null)
                 switchNumber(NetworkController.testImage(file, ViewModel.getCurrentNetworkModel().getLoader(), ViewModel.getCurrentNetworkModel().getNetwork()));
-            log.info(String.format("Selected file: %s",file));
+            log.info(String.format("Selected file: %s", file));
         } catch (IOException e) {
             log.error("Failed at testing image.", e);
         }
-    }
-
-    @FXML
-    public void initialize() {
-
-        topBar.prefWidthProperty().bind(root.widthProperty());
     }
 
     public void switchNumber(int number) {
@@ -77,5 +72,20 @@ public class TemplateController {
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setTextBaseline(VPos.CENTER);
         gc.fillText(number + "", Math.round(calculatedNumberCnv.getWidth() / 2), Math.round(calculatedNumberCnv.getHeight() / 2));
+    }
+
+    @FXML
+    void onTrainNetwork(ActionEvent event) {
+        switchInner("view/training.fxml");
+    }
+
+    public void switchInner(String path){
+        try {
+            FXMLLoader outerLoader = new FXMLLoader(Gui.class.getClassLoader().getResource(path));
+            outerLoader.setRoot(innerPane);
+            innerPane = outerLoader.load();
+        } catch (IOException e) {
+            log.error("Failed at loading inner", e);
+        }
     }
 }
