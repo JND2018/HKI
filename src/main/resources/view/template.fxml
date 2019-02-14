@@ -34,6 +34,18 @@
                         </ImageView>
                      </graphic>
                   </Button>
+                  <Button fx:id="drawBtn" contentDisplay="TOP" mnemonicParsing="false" onAction="#onFileLoad" prefHeight="0.0" prefWidth="120.0" text="Draw" textAlignment="CENTER" wrapText="true">
+                     <graphic>
+                        <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/edit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets left="10.0" top="15.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
             </HBox>
          </children>
