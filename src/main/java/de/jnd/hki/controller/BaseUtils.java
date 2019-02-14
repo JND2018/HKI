@@ -22,7 +22,7 @@ public class BaseUtils {
 
 	public static File fileChose(Window window) {
 		FileChooser fc = new FileChooser();
-		return fc.showOpenDialog(window);
+		return fc.showOpenDialog(null);
 	}
 
 	public static String getTargetLocation(){
