@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class NetworkController {
     private static Logger log = LoggerFactory.getLogger(NetworkController.class);
-    private static ArrayList<Integer> labelList = new ArrayList<Integer>() {{
+    private static ArrayList<Integer> numberList = new ArrayList<Integer>() {{
         add(0);
         add(1);
         add(2);
@@ -62,12 +62,11 @@ public class NetworkController {
             }
         } else {
             ModelSerializer.writeModel(network, file, false);
-
         }
         log.info(String.format("Network saved under %s",file.getAbsolutePath()));
     }
 
-    public static MultiLayerConfiguration getNetworkConfigForMNIST(int seed, int inputs, int outputs, Map<Integer, InputPreProcessor> inputPreProcessorMap) {
+    public static MultiLayerConfiguration getNetworkConfigForMNIST(int seed,int hiddenOutputs , int outputs, Map<Integer, InputPreProcessor> inputPreProcessorMap) {
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
@@ -75,10 +74,10 @@ public class NetworkController {
                 .l2(1e-4)
                 .list()
                 .layer(0, new DenseLayer.Builder()
-                        .nIn(inputs) // Number of input datapoints.
-                        .nOut(1000) // Number of output datapoints.
-                        .activation(Activation.RELU) // Activation function.
-                        .weightInit(WeightInit.XAVIER) // Weight initialization.
+                        .nIn(28 *28)
+                        .nOut(hiddenOutputs)
+                        .activation(Activation.RELU)
+                        .weightInit(WeightInit.XAVIER)
                         .build())
                 .layer(1, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .nIn(1000)
@@ -95,18 +94,13 @@ public class NetworkController {
     }
 
     public static MultiLayerNetwork createNetwork() {
-        //number of rows and columns in the input pictures
-        int numRows = 28;
-        int numColumns = 28;
-        int outputNum = 10; // number of output classes
-        int batchSize = 128; // batch size for each epoch
-        int rngSeed = 123; // random number seed for reproducibility
-        int numEpochs = 15; // number of epochs to perform
+        int outputNum = 10;
+        int randomSeed =  (int) (Math.random() * 999);
 
         Map<Integer, InputPreProcessor> inputPreProcessorMap = new HashMap<>();
-        inputPreProcessorMap.put(0, new CnnToFeedForwardPreProcessor(numRows, numColumns));
+        inputPreProcessorMap.put(0, new CnnToFeedForwardPreProcessor(28,28));
 
-        MultiLayerConfiguration conf = NetworkController.getNetworkConfigForMNIST(rngSeed, numColumns * numRows, outputNum, inputPreProcessorMap);
+        MultiLayerConfiguration conf = NetworkController.getNetworkConfigForMNIST(randomSeed, 1000, outputNum, inputPreProcessorMap);
 
         MultiLayerNetwork model = new MultiLayerNetwork(conf);
 
@@ -114,10 +108,6 @@ public class NetworkController {
 
         log.info("Network created");
         return model;
-    }
-
-    public static int testImage(NativeImageLoader loader, MultiLayerNetwork model) throws IOException {
-        return testImage(BaseUtils.fileChose(null), loader, model);
     }
 
     public static int testImage(File file, NativeImageLoader loader, MultiLayerNetwork model) throws IOException {
@@ -140,18 +130,17 @@ public class NetworkController {
             }
         }
 
-        log.info(String.format("The expected number is %s", labelList.get(bestIndex)));
-        return labelList.get(bestIndex);
+        log.info(String.format("The expected number is %s", numberList.get(bestIndex)));
+        return numberList.get(bestIndex);
     }
 
-    public static StringBuilder trainNetwork(MultiLayerNetwork model, int numEpochs, int printIteration) throws IOException {
+    public static StringBuilder trainNetwork(MultiLayerNetwork model, int numEpochs, int printIteration, int batchSize) throws IOException {
         StopWatch stopWatch = new StopWatch();
         log.info("Training network ...");
-        int batchSize = 128; // batch size for each epoch
-        int rngSeed = 123; // random number seed for reproducibility
-        //Get the DataSetIterators:
-        MnistDataSetIterator mnistTrain = new MnistDataSetIterator(batchSize, true, rngSeed);
-        MnistDataSetIterator mnistTest = new MnistDataSetIterator(batchSize, false, rngSeed);
+        int seed = 1337;
+
+        MnistDataSetIterator mnistTrain = new MnistDataSetIterator(batchSize, true, seed);
+        MnistDataSetIterator mnistTest = new MnistDataSetIterator(batchSize, false, seed);
 
         if (printIteration > 0)
             model.setListeners(new ScoreIterationListener(printIteration));
@@ -161,16 +150,11 @@ public class NetworkController {
         }
         stopWatch.stop();
 
-
         Evaluation evaluation = model.evaluate(mnistTest);
         StringBuilder strBuilder = new StringBuilder();
 
-        // print the basic statistics about the trained classifier
         strBuilder.append("\nAccuracy: " + evaluation.accuracy());
-        strBuilder.append("\nPrecision: " + evaluation.precision());
-        strBuilder.append("\nRecall: " + evaluation.recall());
 
-        // in more complex scenarios, a confusion matrix is quite helpful
         strBuilder.append("\n" + evaluation.confusionToString());
 
         log.info(String.format("Network trained: %s seconds",stopWatch.getTime()/1000));

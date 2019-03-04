@@ -79,7 +79,7 @@ public class TemplateController {
         switchInner("view/training.fxml");
     }
 
-    public void switchInner(String path){
+    public void switchInner(String path) {
         try {
             FXMLLoader outerLoader = new FXMLLoader(Gui.class.getClassLoader().getResource(path));
             outerLoader.setRoot(innerPane);
