@@ -30,10 +30,10 @@ class TooFewAruComarkersFoundException extends Exception {
 
 public class InputController {
     private static Logger log = LoggerFactory.getLogger(InputController.class);
-    static int DEFAULTCELLCOLS = 14;
-    static int DEFAULTCELLROWS = 22;
-    static float DEFAULTCELLOFFSET = 1.5f;
-    static Size DEFAULTOUTPUTSIZE = new Size(28, 28);
+    private static int DEFAULTCELLCOLS = 14;
+    private static int DEFAULTCELLROWS = 22;
+    private static float DEFAULTCELLOFFSET = 1.5f;
+    private static Size DEFAULTOUTPUTSIZE = new Size(28, 28);
 
     public static Mat openImg(String path) throws IOException {
         log.info("Loading image " + path);
@@ -145,7 +145,6 @@ public class InputController {
             dst = nim.asMatrix(src);
         } catch (IOException e) {
             log.error("Failed to convert opencv Mat to INDArray.");
-            System.exit(1);
         }
         return dst;
     }
@@ -162,13 +161,10 @@ public class InputController {
             characters = convertMatsToIDNArray(charactersMat);
         } catch (IOException e) {
             log.error("Failed to load image " + file);
-            System.exit(1);
         } catch (NoAruComarkersFoundException e) {
             log.error("No AruCo Markers could be detected in the image " + file);
-            System.exit(1);
         } catch (TooFewAruComarkersFoundException e) {
             log.error("Too few AruCo markers were detected in the image " + file);
-            System.exit(1);
         }
         return characters;
     }

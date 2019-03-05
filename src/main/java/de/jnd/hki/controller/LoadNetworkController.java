@@ -26,10 +26,12 @@ public class LoadNetworkController {
     public void initialize() {
         File[] models = new File(BaseUtils.getTargetLocation() + "/networks/").listFiles();
         ObservableList<File> data = FXCollections.observableArrayList();
-        data.addAll(models);
-        networks.getColumns().get(0).setCellValueFactory(new PropertyValueFactory("name"));
-        networks.getColumns().get(1).setCellValueFactory(new PropertyValueFactory("path"));
-        networks.setItems(data);
+        if (models != null) {
+            data.addAll(models);
+            networks.getColumns().get(0).setCellValueFactory(new PropertyValueFactory("name"));
+            networks.getColumns().get(1).setCellValueFactory(new PropertyValueFactory("path"));
+            networks.setItems(data);
+        }
     }
 
     @FXML
