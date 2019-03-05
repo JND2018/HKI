@@ -6,6 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.VPos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -16,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -87,5 +90,21 @@ public class TemplateController {
         } catch (IOException e) {
             log.error("Failed at loading inner", e);
         }
+    }
+
+    @FXML
+    void openAbout(ActionEvent event) {
+        FXMLLoader fxmlLoader = new FXMLLoader(Gui.class.getClassLoader().getResource("view/about.fxml"));
+        Parent root1 = null;
+        try {
+            root1 = (Parent) fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage stage = new Stage();
+        stage.setResizable(false);
+        stage.setTitle("Load Network");
+        stage.setScene(new Scene(root1));
+        stage.show();
     }
 }

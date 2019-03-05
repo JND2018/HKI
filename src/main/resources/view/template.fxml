@@ -22,14 +22,14 @@
             <Canvas fx:id="calculatedNumberCnv" height="128.0" layoutX="1082.0" layoutY="6.0" styleClass="canvas" width="191.0" />
             <HBox layoutX="8.0" layoutY="11.0" prefHeight="116.0" prefWidth="938.0">
                <children>
-                  <Button fx:id="loadImageBtn" contentDisplay="TOP" mnemonicParsing="false" onAction="#onFileLoad" prefHeight="0.0" prefWidth="120.0" styleClass="flatButton" text="Load Image" textAlignment="CENTER" wrapText="true">
+                  <Button fx:id="loadImageBtn" contentDisplay="TOP" mnemonicParsing="false" onAction="#onFileLoad" prefHeight="0.0" prefWidth="120.0" styleClass="flatButton" text="Load File" textAlignment="CENTER" wrapText="true">
                      <HBox.margin>
                         <Insets left="10.0" top="15.0" />
                      </HBox.margin>
                      <graphic>
                         <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../images/add-new-document.png" />
+                              <Image url="@../images/add-file.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -38,7 +38,7 @@
                      <graphic>
                         <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../images/edit.png" />
+                              <Image url="@../images/pencil.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -51,6 +51,30 @@
                         <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/gym.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets left="10.0" top="15.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#openAbout" prefHeight="0.0" prefWidth="120.0" styleClass="flatButton" text="About" textAlignment="CENTER" wrapText="true">
+                     <graphic>
+                        <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/problem.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets left="10.0" top="15.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="0.0" prefWidth="120.0" styleClass="flatButton" text="Load Picture" textAlignment="CENTER" wrapText="true">
+                     <graphic>
+                        <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/camera.png" />
                            </image>
                         </ImageView>
                      </graphic>
