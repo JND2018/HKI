@@ -45,9 +45,12 @@ public class NetworkController {
         add(9);
     }};
 
+    public static MultiLayerNetwork loadNetwork(File file) throws IOException {
+        return ModelSerializer.restoreMultiLayerNetwork(file);
+    }
 
     public static MultiLayerNetwork loadNetwork(String path) throws IOException {
-        return ModelSerializer.restoreMultiLayerNetwork(new File(path));
+        return loadNetwork(new File(path));
     }
 
     public static void saveNetwork(MultiLayerNetwork network, String path, boolean deletePrev) throws IOException {
