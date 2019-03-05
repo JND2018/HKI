@@ -30,6 +30,10 @@ class TooFewAruComarkersFoundException extends Exception {
 
 public class InputController {
     private static Logger log = LoggerFactory.getLogger(InputController.class);
+    static int DEFAULTCELLCOLS = 14;
+    static int DEFAULTCELLROWS = 22;
+    static float DEFAULTCELLOFFSET = 1.5f;
+    static Size DEFAULTOUTPUTSIZE = new Size(28, 28);
 
     public static Mat openImg(String path) throws IOException {
         log.info("Loading image " + path);
@@ -92,11 +96,7 @@ public class InputController {
         return dst;
     }
 
-    public static List<Mat> cutLetters(Mat src) {
-        return cutLetters(src, 14, 22, 1.5f, 28);
-    }
-
-    public static List<Mat> cutLetters(Mat src, int cellCols, int cellRows, float cellOffset, int outputSize) {
+    public static List<Mat> cutLetters(Mat src, int cellCols, int cellRows, float cellOffset, Size size) {
         List<Mat> dst = new ArrayList<>();
 
         float cellSizeRows = (float)src.rows() / (cellRows + (cellOffset * 2));
@@ -104,7 +104,6 @@ public class InputController {
         int offsetRows = Math.round(cellOffset * cellSizeRows);
         int offsetCols = Math.round(cellOffset * cellSizeCols);
         int border = (int)cellSizeCols/15;
-        Size size = new Size(outputSize, outputSize);
 
         log.debug("cellsize: " + cellSizeRows);
         log.debug("Offset: " + offsetRows);
@@ -122,7 +121,7 @@ public class InputController {
                         x + border,
                         Math.round(x + cellSizeCols) - border
                 );
-                log.debug(String.format("Resizing characters to %sx%s Pixels", outputSize, outputSize));
+                log.debug(String.format("Resizing characters to %sx%s Pixels", size.width, size.height));
                 Imgproc.resize(tmp, tmp, size);
                 dst.add(tmp);
             }
@@ -159,7 +158,7 @@ public class InputController {
             Mat img = preprocessImg(openImg(file));
             List<Point> corners = detectAruCo(img);
             Mat imgAffine = affineTransform(img, corners);
-            List<Mat> charactersMat = cutLetters(imgAffine);
+            List<Mat> charactersMat = cutLetters(imgAffine, DEFAULTCELLCOLS, DEFAULTCELLROWS, DEFAULTCELLOFFSET, DEFAULTOUTPUTSIZE);
             characters = convertMatsToIDNArray(charactersMat);
         } catch (IOException e) {
             log.error("Failed to load image " + file);
