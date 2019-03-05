@@ -152,6 +152,7 @@ public class InputController {
     }
 
     public static List<INDArray> loadImage(String file) {
+        Loader.load(opencv_java.class); // load native openCV functions
         log.info("Imageloader started.");
         List<INDArray> characters = null;
         try {
@@ -171,10 +172,5 @@ public class InputController {
             System.exit(1);
         }
         return characters;
-    }
-
-    public static void main(String[] args) {
-        Loader.load(opencv_java.class);
-        List<INDArray> chars = loadImage("/home/jahlers/schule/msp/images/template_v3_ausgefuellt.png");
     }
 }
