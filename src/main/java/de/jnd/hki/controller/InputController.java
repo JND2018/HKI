@@ -30,10 +30,10 @@ class TooFewAruComarkersFoundException extends Exception {
 
 public class InputController {
     private static Logger log = LoggerFactory.getLogger(InputController.class);
-    private static int DEFAULTCELLCOLS = 14;
-    private static int DEFAULTCELLROWS = 22;
-    private static float DEFAULTCELLOFFSET = 1.5f;
-    private static Size DEFAULTOUTPUTSIZE = new Size(28, 28);
+    private static final int DEFAULTCELLCOLS = 14;
+    private static final int DEFAULTCELLROWS = 22;
+    private static final float DEFAULTCELLOFFSET = 1.5f;
+    private static final Size DEFAULTOUTPUTSIZE = new Size(28, 28);
 
     public static Mat openImg(String path) throws IOException {
         log.info("Loading image " + path);
