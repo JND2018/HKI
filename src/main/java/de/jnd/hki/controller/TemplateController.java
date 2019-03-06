@@ -63,4 +63,9 @@ public class TemplateController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    void onDraw(ActionEvent event) {
+        switchInner("view/drawPanel.fxml");
+    }
 }
