@@ -1,10 +1,9 @@
 package de.jnd.hki.application;
 
 import de.jnd.hki.controller.BaseUtils;
+import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 public class App {
     private static Logger log = LoggerFactory.getLogger(App.class);
@@ -15,8 +14,27 @@ public class App {
         log.info("Eclipse: "+BaseUtils.isEclipse());
         log.info("IntelliJ: "+BaseUtils.isIntelliJ());
 
-        Map<String, String> argsMap = BaseUtils.convertArgsToMap(args);
-        switch (argsMap.get("mode") == null ? "" : argsMap.get("mode")) {
+        Options options = new Options();
+
+        Option mode = new Option("m", "mode", true, "mode option");
+        mode.setRequired(true);
+        options.addOption(mode);
+
+        CommandLineParser parser = new DefaultParser();
+        HelpFormatter formatter = new HelpFormatter();
+        CommandLine cmd = null;
+
+        try {
+            cmd = parser.parse(options, args);
+        } catch (ParseException e) {
+            System.out.println(e.getMessage());
+            formatter.printHelp("utility-name", options);
+
+            System.exit(1);
+        }
+
+
+        switch (cmd.getOptionValue("mode")) {
             case "gui":
                 Gui.main(null);
                 break;

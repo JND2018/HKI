@@ -1,28 +1,37 @@
 package de.jnd.hki.application;
 
-import de.jnd.hki.controller.NetworkController;
-import de.jnd.hki.model.NetworkModel;
+import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
-
-import java.io.IOException;
 
 public class Console {
     private static Logger log = Logger.getLogger(Console.class);
 
     public static void main(String[] args) {
-        NetworkModel model = new NetworkModel();
-        model.setNetwork(NetworkController.createNetwork());
+        log.info("Console app loaded.");
+
+        Options options = new Options();
+
+        Option input = new Option("i", "input", true, "input file");
+        input.setRequired(true);
+        options.addOption(input);
+
+        Option output = new Option("o", "output", true, "output file");
+        output.setRequired(true);
+        options.addOption(output);
+
+        CommandLineParser parser = new DefaultParser();
+        HelpFormatter formatter = new HelpFormatter();
+        CommandLine cmd = null;
+
         try {
-//            model.setNetwork(NetworkController.loadNetwork(BaseUtils.getTargetLocation()+"/networks/model25.zip"));
-            log.info(NetworkController.trainNetwork(model.getNetwork(),1,200,128));
-//            NetworkController.saveNetwork(model.getNetwork(), BaseUtils.getTargetLocation()+"/networks/model50.zip",true);
+            cmd = parser.parse(options, args);
+        } catch (ParseException e) {
+            System.out.println(e.getMessage());
+            formatter.printHelp("utility-name", options);
 
-//            log.info(NetworkController.testImage(model.getLoader(), model.getNetwork()) + "");
-
-//            log.info(NetworkController.trainNetwork(model.getNetwork(),1,0));
-
-        } catch (IOException e) {
-            log.error("Failed to load Image.", e);
+            System.exit(1);
         }
+
+
     }
 }
