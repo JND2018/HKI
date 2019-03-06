@@ -113,7 +113,7 @@ public class NetworkController {
         return model;
     }
 
-    public static int testImage(INDArray image, NativeImageLoader loader, MultiLayerNetwork model) throws IOException {
+    public static int testImage(INDArray image, MultiLayerNetwork model) throws IOException {
         if (image == null) {
             log.error("Empty image");
             System.exit(1);
