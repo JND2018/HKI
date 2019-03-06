@@ -6,7 +6,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
@@ -25,9 +24,6 @@ public class TrainingController {
 
     @FXML
     private TextField epochsField;
-
-    @FXML
-    private Button trainBtn;
 
     @FXML
     private ProgressIndicator trainingIndicator;
@@ -57,14 +53,14 @@ public class TrainingController {
         Runnable task = () -> {
             indicatorToggle.accept(true);
             try {
-                NetworkController.trainNetwork(ViewModel.getCurrentNetworkModel().getNetwork(), Integer.parseInt(epochsField.getText()), 100);
+                log.info(NetworkController.trainNetwork(ViewModel.getCurrentNetworkModel().getNetwork(), Integer.parseInt(epochsField.getText()), 100, 128));
             } catch (IOException e) {
                 log.error("Failed at training", e);
             }
 
             if (saveCheckbox.isSelected()) {
                 try {
-                    NetworkController.saveNetwork(ViewModel.getCurrentNetworkModel().getNetwork(), String.format("%s/networks/%s.zip",BaseUtils.getTargetLocation(), networkName.getText()), true);
+                    NetworkController.saveNetwork(ViewModel.getCurrentNetworkModel().getNetwork(), String.format("%s/networks/%s.zip", BaseUtils.getTargetLocation(), networkName.getText()), true);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

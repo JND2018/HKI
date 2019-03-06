@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?scenebuilder-stylesheet stylesheet.css?>
+<?import java.net.URL?>
+
+<fx:root prefHeight="530.0" prefWidth="1280.0" type="javafx.scene.layout.BorderPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.jnd.hki.controller.FileDetectionController">
+    <stylesheets>
+        <URL value="@stylesheet.css" />
+    </stylesheets>
+    <center>
+        <AnchorPane prefHeight="394.0" prefWidth="723.0" BorderPane.alignment="CENTER">
+         <children>
+            <TabPane layoutY="-2.0" prefHeight="530.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Single number detection">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#onFileSelection" text="Choose file" />
+                              <Canvas fx:id="calculatedNumberCnv" height="200.0" layoutX="14.0" layoutY="50.0" width="200.0" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+                <Tab text="Multi number detection" />
+              </tabs>
+            </TabPane>
+         </children>
+        </AnchorPane>
+    </center>
+</fx:root>

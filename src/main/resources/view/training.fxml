@@ -14,7 +14,7 @@
          <children>
             <TextField fx:id="epochsField" layoutX="174.0" layoutY="43.0" prefHeight="28.0" prefWidth="81.0" />
             <Label layoutX="36.0" layoutY="44.0" prefHeight="26.0" prefWidth="137.0" text="Training epochs:" />
-            <Button fx:id="trainBtn" layoutX="36.0" layoutY="463.0" mnemonicParsing="false" onAction="#onTraning" prefHeight="53.0" prefWidth="146.0" text="Train" />
+            <Button layoutX="36.0" layoutY="463.0" mnemonicParsing="false" onAction="#onTraning" prefHeight="53.0" prefWidth="146.0" text="Train" />
             <ProgressIndicator fx:id="trainingIndicator" layoutX="614.0" layoutY="239.0" prefHeight="106.0" prefWidth="100.0" visible="false" />
             <Label layoutX="36.0" layoutY="80.0" prefHeight="26.0" prefWidth="137.0" text="Save network:" />
             <CheckBox fx:id="saveCheckbox" layoutX="174.0" layoutY="84.0" mnemonicParsing="false" onAction="#onSaveChanged" prefHeight="18.0" prefWidth="12.0" />
