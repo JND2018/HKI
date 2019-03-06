@@ -17,10 +17,7 @@ import org.datavec.image.loader.NativeImageLoader;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
-//import java.awt.*;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +93,7 @@ public class FileDetectionController {
                 result.add(NetworkController.testImage(character, network));
             }
             csvController.writeCSV(result, outputFile.getText());
+            status.setText("Finished");
         } catch (IOException | InputException e) {
             if (result.isEmpty()) {
                 status.setText("Failed at testing image");
