@@ -20,7 +20,7 @@
          <children>
             <HBox layoutX="8.0" layoutY="11.0" prefHeight="116.0" prefWidth="938.0">
                <children>
-                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onFileLoad" prefHeight="0.0" prefWidth="120.0" styleClass="flatButton" text="Single File" textAlignment="CENTER" wrapText="true">
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onFileLoad" prefHeight="0.0" prefWidth="120.0" styleClass="flatButton" text="Load File" textAlignment="CENTER" wrapText="true">
                      <HBox.margin>
                         <Insets left="10.0" top="15.0" />
                      </HBox.margin>
@@ -49,18 +49,6 @@
                         <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/gym.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <HBox.margin>
-                        <Insets left="10.0" top="15.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="0.0" prefWidth="120.0" styleClass="flatButton" text="Load Picture" textAlignment="CENTER" wrapText="true">
-                     <graphic>
-                        <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/camera.png" />
                            </image>
                         </ImageView>
                      </graphic>

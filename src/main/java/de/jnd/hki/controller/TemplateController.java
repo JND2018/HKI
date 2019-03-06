@@ -33,7 +33,7 @@ public class TemplateController {
 
     @FXML
     void onFileLoad(ActionEvent event) {
-        switchInner("view/singleFileDetection.fxml");
+        switchInner("view/fileDetection.fxml");
     }
 
 
