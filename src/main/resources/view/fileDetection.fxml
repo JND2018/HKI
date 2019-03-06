@@ -35,6 +35,7 @@
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                            <children>
                               <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#onTestMultiFile" text="Test" />
+                               <TextField fx:id="outputFile" layoutX="14.0" layoutY="50.0" promptText="output file (.csv)" />
                            </children></AnchorPane>
                     </content>
                 </Tab>
