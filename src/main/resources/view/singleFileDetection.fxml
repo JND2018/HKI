@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<fx:root prefHeight="530.0" prefWidth="1280.0" type="javafx.scene.layout.BorderPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.jnd.hki.controller.FileDetectionController">
+    <center>
+        <AnchorPane prefHeight="394.0" prefWidth="723.0" BorderPane.alignment="CENTER">
+         <children>
+            <Canvas fx:id="calculatedNumberCnv" height="200.0" layoutX="22.0" layoutY="123.0" width="200.0" />
+            <Button layoutX="22.0" layoutY="89.0" mnemonicParsing="false" onAction="#onFileSelection" text="Choose file" />
+         </children>
+        </AnchorPane>
+    </center>
+</fx:root>

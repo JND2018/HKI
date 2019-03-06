@@ -6,7 +6,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
@@ -25,9 +24,6 @@ public class TrainingController {
 
     @FXML
     private TextField epochsField;
-
-    @FXML
-    private Button trainBtn;
 
     @FXML
     private ProgressIndicator trainingIndicator;

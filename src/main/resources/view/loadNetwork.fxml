@@ -33,8 +33,8 @@
          </graphic></Button>
       <TableView fx:id="networks" layoutX="14.0" layoutY="14.0" prefHeight="414.0" prefWidth="322.0">
         <columns>
-          <TableColumn prefWidth="159.1999454498291" text="C1" />
-          <TableColumn prefWidth="162.4000305175781" text="C2" />
+          <TableColumn prefWidth="159.1999454498291" text="Name" />
+          <TableColumn prefWidth="162.4000305175781" text="Path" />
         </columns>
       </TableView>
       <Button layoutX="344.0" layoutY="400.0" mnemonicParsing="false" onAction="#loadNetwork" prefHeight="28.0" prefWidth="88.0" styleClass="flatButton" text="Load" />

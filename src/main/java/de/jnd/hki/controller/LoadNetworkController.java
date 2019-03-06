@@ -6,8 +6,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.slf4j.Logger;
@@ -24,14 +27,24 @@ public class LoadNetworkController {
 
     @FXML
     public void initialize() {
+        networks.setRowFactory( tv -> {
+            TableRow<File> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    loadNetwork(new ActionEvent(networks,networks));
+                }
+            });
+            return row ;
+        });
+
         File[] models = new File(BaseUtils.getTargetLocation() + "/networks/").listFiles();
         ObservableList<File> data = FXCollections.observableArrayList();
         if (models != null) {
             data.addAll(models);
-            networks.getColumns().get(0).setCellValueFactory(new PropertyValueFactory("name"));
-            networks.getColumns().get(1).setCellValueFactory(new PropertyValueFactory("path"));
-            networks.setItems(data);
         }
+        networks.getColumns().get(0).setCellValueFactory(new PropertyValueFactory("name"));
+        networks.getColumns().get(1).setCellValueFactory(new PropertyValueFactory("path"));
+        networks.setItems(data);
     }
 
     @FXML
@@ -56,10 +69,16 @@ public class LoadNetworkController {
 
     @FXML
     void loadNetwork(ActionEvent event) {
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
         File selectedItem = networks.getSelectionModel().getSelectedItem();
+
         if (selectedItem != null) {
             try {
                 ViewModel.setCurrentNetworkModel(new NetworkModel(NetworkController.loadNetwork(selectedItem)));
+                ViewModel.setCurrentStage(ViewController.openView("template"));
+                ViewModel.getCurrentStage().setResizable(false);
+                ViewModel.getCurrentStage().show();
+                stage.close();
             } catch (IOException e) {
                 log.error("Failed at loading network",e);
             }
