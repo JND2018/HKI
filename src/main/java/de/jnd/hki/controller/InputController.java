@@ -14,6 +14,7 @@ import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.MatOfPoint2f;
+import org.opencv.imgproc.Moments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,7 @@ public class InputController {
     private static final int DEFAULTCELLCOLS = 14;
     private static final int DEFAULTCELLROWS = 22;
     private static final float DEFAULTCELLOFFSET = 1.5f;
+    private static final Size DEFAULTCHARSIZE = new Size(20, 20);
     private static final Size DEFAULTOUTPUTSIZE = new Size(28, 28);
 
     public static Mat openImg(String path) throws IOException {
@@ -111,7 +113,7 @@ public class InputController {
         return dst;
     }
 
-    public static List<Mat> cutLetters(Mat src, int cellCols, int cellRows, float cellOffset, Size size) {
+    public static List<Mat> cutLetters(Mat src, int cellCols, int cellRows, float cellOffset, Size charSize, Size imgSize) {
         List<Mat> dst = new ArrayList<>();
 
         float cellSizeRows = (float)src.rows() / (cellRows + (cellOffset * 2));
@@ -137,10 +139,32 @@ public class InputController {
                         x + border,
                         Math.round(x + cellSizeCols) - border
                 );
-                log.debug(String.format("Resizing characters to %sx%s Pixels", size.width, size.height));
-                Imgproc.resize(tmp, tmp, size);
-                if (DEBUG) Imgcodecs.imwrite(String.format(DEBUGPATH + "/chars/%s%s.png", row, col), tmp);
-                dst.add(tmp);
+                log.debug(String.format("Resizing characters to %sx%s Pixels", charSize.width, charSize.height));
+                Imgproc.resize(tmp, tmp, charSize);
+                Mat tmp2 = new Mat(imgSize, tmp.type());
+                Moments moments = Imgproc.moments(tmp);
+
+                Point centerOfMass = new Point(
+                        moments.m10 / moments.m00,
+                        moments.m01 / moments.m00
+                );
+                Point centerGeom = new Point(tmp.cols(), tmp.rows());
+                Point centerDelta = new Point(
+                        Math.round(centerOfMass.x - centerGeom.x + 1),
+                        Math.round(centerOfMass.y - centerGeom.y + 1)
+                );
+                for (int u = 0; u < tmp.cols(); u++) {
+                    for (int v = 0; v < tmp.rows(); v++) {
+                        tmp2.put(
+                                (int)(v + centerDelta.y),
+                                (int)(u + centerDelta.x),
+                                tmp.get(v, u)
+                        );
+                    }
+                }
+
+                if (BaseUtils.isDebug()) Imgcodecs.imwrite(String.format(DEBUGPATH + "/chars/%s%s.png", row, col), tmp2);
+                dst.add(tmp2);
             }
         }
         return dst;
@@ -179,7 +203,7 @@ public class InputController {
             Mat img = preprocessImg(openImg(file));
             List<Point> corners = detectAruCo(img);
             Mat imgTransformed = perspectiveTransform(img, corners);
-            charactersMat = cutLetters(imgTransformed, DEFAULTCELLCOLS, DEFAULTCELLROWS, DEFAULTCELLOFFSET, DEFAULTOUTPUTSIZE);
+            charactersMat = cutLetters(imgTransformed, DEFAULTCELLCOLS, DEFAULTCELLROWS, DEFAULTCELLOFFSET, DEFAULTCHARSIZE, DEFAULTOUTPUTSIZE);
             characters = convertMatsToIDNArray(charactersMat);
         } catch (IOException e) {
             if (charactersMat == null) {
