@@ -15,7 +15,7 @@
     <stylesheets>
         <URL value="@stylesheet.css" />
     </stylesheets>
-   <top>
+   <center>
         <AnchorPane prefHeight="394.0" prefWidth="723.0" BorderPane.alignment="CENTER">
          <children>
             <TabPane layoutY="35.0" prefHeight="495.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE">
@@ -45,5 +45,5 @@
             <Label fx:id="status" layoutX="430.0" layoutY="9.0" />
          </children>
         </AnchorPane>
-   </top>
+   </center>
 </fx:root>
