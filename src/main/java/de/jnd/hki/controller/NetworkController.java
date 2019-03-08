@@ -113,11 +113,12 @@ public class NetworkController {
         return model;
     }
 
-    public static int testImage(File file, NativeImageLoader loader, MultiLayerNetwork model) throws IOException {
-        if (file == null)
-            System.exit(0);
+    public static int testImage(INDArray image, MultiLayerNetwork model) throws IOException {
+        if (image == null) {
+            log.error("Empty image");
+            System.exit(1);
+        }
 
-        INDArray image = loader.asMatrix(file);
         DataNormalization scaler = new ImagePreProcessingScaler(0, 1);
         scaler.transform(image);
 
