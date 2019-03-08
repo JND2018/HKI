@@ -3,9 +3,33 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="544.0" prefWidth="423.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="544.0" prefWidth="423.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label layoutX="14.0" layoutY="14.0" text="Icon made by Smashicons from www.flaticon.com" />
-      <Label layoutX="14.0" layoutY="32.0" text="Icon made by Monkik from www.flaticon.com" />
+      <Label layoutX="14.0" layoutY="14.0" text="Icons made by Smashicons and Monkik from www.flaticon.com" />
+      <Label layoutX="14.0" layoutY="40.0" text=
+"Copyright 2019 Jannik Ahlers, Daniel Steinke, Nicolas Preen&#10;&#10;
+
+== MIT license ==&#10;&#10;
+
+Permission is hereby granted, free of charge, to any person&#10;
+obtaining a copy of this software and associated documentation&#10;
+files (the 'Software'), to deal in the Software without&#10;
+restriction, including without limitation the rights to use,&#10;
+copy, modify, merge, publish, distribute, sublicense, and/or&#10;
+sell copies of the Software, and to permit persons to whom&#10;
+the Software is furnished to do so, subject to the following&#10;
+conditions:&#10;&#10;
+The above copyright notice and this permission notice shall&#10;
+be included in all copies or substantial portions of&#10;
+the Software.&#10;&#10;
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY&#10;
+KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE&#10;
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR&#10;
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS&#10;
+OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR&#10;
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR&#10;
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE&#10;
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE." textOverrun="CLIP" />
    </children>
 </AnchorPane>

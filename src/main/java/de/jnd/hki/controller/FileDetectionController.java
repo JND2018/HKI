@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -16,10 +17,7 @@ import org.datavec.image.loader.NativeImageLoader;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
-//import java.awt.*;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +28,10 @@ public class FileDetectionController {
     private Canvas calculatedNumberCnv;
     @FXML
     private TextField filePath;
+    @FXML
+    private Label status;
+    @FXML
+    private TextField outputFile;
 
     @FXML
     public void initialize() {
@@ -57,7 +59,7 @@ public class FileDetectionController {
     void onTestSingleFile(ActionEvent event) {
         String file = filePath.getText();
         if (file.isEmpty()) {
-            // do nothing if no file is selected
+            status.setText("File is empty");
             return;
         }
 
@@ -77,37 +79,29 @@ public class FileDetectionController {
     void onTestMultiFile(ActionEvent event) {
         String file = filePath.getText();
         if (file.isEmpty()) {
-            // do nothing if no file is selected
+            status.setText("File is empty");
             return;
         }
 
-        NativeImageLoader loader = ViewModel.getCurrentNetworkModel().getLoader();
         MultiLayerNetwork network = ViewModel.getCurrentNetworkModel().getNetwork();
+        List<Integer> result = new ArrayList<>();
 
         try {
-            if (file != null) {
-                List<INDArray> characters;
-                characters = InputController.loadImage(file);
-                List<Integer> result = new ArrayList<>();
-                for (INDArray character: characters) {
-                    result.add(NetworkController.testImage(character, network));
-                }
+            List<INDArray> characters;
+            characters = InputController.loadImage(file);
+            for (INDArray character: characters) {
+                result.add(NetworkController.testImage(character, network));
             }
-            log.info(String.format("Selected file: %s", file));
-        } catch (InputException e) {
-            log.error("Failed at testing image.", e);
-        }
-    }
-
-    void writeCSV(List<Integer> result, String file) {
-        if (!file.endsWith(".csv")) {
-            file+= ".csv";
-        }
-
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        } catch (IOException e) {
-            log.error("Failed to write to csv file. Filename: " + file);
+            csvController.writeCSV(result, outputFile.getText());
+            status.setText("Finished");
+        } catch (IOException | InputException e) {
+            if (result.isEmpty()) {
+                status.setText("Failed at testing image");
+                log.error("Failed at testing image.", e);
+            } else {
+                status.setText("Could not write to csv. Is the output path correct?");
+                log.error("Failed to write to csv file. Filename: " + outputFile.getText());
+            }
         }
     }
 }

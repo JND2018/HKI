@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.shape.Line?>
+<fx:root type="javafx.scene.layout.BorderPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.jnd.hki.controller.DrawPanelController">
+
+   <BorderPane xmlns="http://javafx.com/javafx"
+               xmlns:fx="http://javafx.com/fxml"
+               prefHeight="500.0" prefWidth="500.0">
+
+      <top>
+         <VBox>
+            <MenuBar>
+               <Menu text="File">
+                  <MenuItem text="Save" onAction="#onSave" />
+                  <MenuItem text="Clear" onAction="#onClear" />
+               </Menu>
+            </MenuBar>
+            <ToolBar>
+               <HBox alignment="CENTER" spacing="30">
+                  <Slider fx:id="lineThickness" />
+                  <Line fx:id="sampleLine" endX="36.0" endY="7.62939453125E-6" fill="black" startX="-33.507083892822266" startY="7.62939453125E-6" stroke="WHITE" />
+               </HBox>
+            </ToolBar>
+         </VBox>
+      </top>
+      <center>
+         <Canvas fx:id="drawPanelCnv" width="500" height="500" />
+      </center>
+
+   </BorderPane></fx:root>

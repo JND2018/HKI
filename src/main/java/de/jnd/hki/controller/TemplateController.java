@@ -72,6 +72,6 @@ public class TemplateController {
 
     @FXML
     void onDraw(ActionEvent event) {
-        switchInner("view/drawPanel.fxml");
+        switchInner("view/drawPanelFX.fxml");
     }
 }
