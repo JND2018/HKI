@@ -4,44 +4,49 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BaseUtils {
-	public static Map<String,String> convertArgsToMap(String ... args ){
-		Map<String,String> map = new HashMap<>();
-		Arrays.stream(args).forEach((String x) ->{
-			if(x.contains("=")){
-				map.put(x.split("=")[0],x.split("=")[1]);
-			}
-		});
-		return map;
-	}
+    public static Map<String, String> convertArgsToMap(String... args) {
+        Map<String, String> map = new HashMap<>();
+        Arrays.stream(args).forEach((String x) -> {
+            if (x.contains("=")) {
+                map.put(x.split("=")[0], x.split("=")[1]);
+            }
+        });
+        return map;
+    }
 
-	public static File fileChose(Window window) {
-		FileChooser fc = new FileChooser();
-		return fc.showOpenDialog(null);
-	}
+    public static File fileChose(Window window) {
+        FileChooser fc = new FileChooser();
+        return fc.showOpenDialog(null);
+    }
 
-	public static String getTargetLocation(){
-		URL location = BaseUtils.class.getProtectionDomain().getCodeSource().getLocation();
-		return location.getFile().replace("classes/","");
-	}
+    public static String getTargetLocation() {
+        URL location = BaseUtils.class.getProtectionDomain().getCodeSource().getLocation();
+        return location.getFile().replace("classes/", "");
+    }
 
-	public static boolean isDebug(){
-		return java.lang.management.ManagementFactory.getRuntimeMXBean().
-				getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
-	}
+    public static String getJarFolder() throws URISyntaxException {
+        return new File(BaseUtils.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent();
+    }
 
-	public static boolean isEclipse() {
-		boolean isEclipse = System.getProperty("java.class.path").toLowerCase().contains("eclipse");
-		return isEclipse;
-	}
+    public static boolean isDebug() {
+        return java.lang.management.ManagementFactory.getRuntimeMXBean().
+                getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
+    }
 
-	public static boolean isIntelliJ() {
-		boolean isIntelliJ = System.getProperty("java.class.path").toLowerCase().contains("idea");
-		return isIntelliJ;
-	}
+    public static boolean isEclipse() {
+        boolean isEclipse = System.getProperty("java.class.path").toLowerCase().contains("eclipse");
+        return isEclipse;
+    }
+
+    public static boolean isIntelliJ() {
+        boolean isIntelliJ = System.getProperty("java.class.path").toLowerCase().contains("idea");
+        return isIntelliJ;
+    }
 }

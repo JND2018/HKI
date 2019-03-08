@@ -94,7 +94,7 @@ public class FileDetectionController {
                 }
             }
             log.info(String.format("Selected file: %s", file));
-        } catch (IOException | InputException e) {
+        } catch (InputException e) {
             log.error("Failed at testing image.", e);
         }
     }

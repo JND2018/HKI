@@ -1,7 +1,6 @@
 package de.jnd.hki.controller;
 
 import org.apache.commons.lang3.time.StopWatch;
-import org.datavec.image.loader.NativeImageLoader;
 import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
@@ -79,11 +78,11 @@ public class NetworkController {
                 .layer(0, new DenseLayer.Builder()
                         .nIn(28 *28)
                         .nOut(hiddenOutputs)
-                        .activation(Activation.RELU)
+                        .activation(Activation.SIGMOID)
                         .weightInit(WeightInit.XAVIER)
                         .build())
                 .layer(1, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                        .nIn(1000)
+                        .nIn(hiddenOutputs)
                         .nOut(outputs)
                         .activation(Activation.SOFTMAX)
                         .weightInit(WeightInit.XAVIER)
@@ -113,7 +112,7 @@ public class NetworkController {
         return model;
     }
 
-    public static int testImage(INDArray image, MultiLayerNetwork model) throws IOException {
+    public static int testImage(INDArray image, MultiLayerNetwork model){
         if (image == null) {
             log.error("Empty image");
             System.exit(1);
@@ -134,7 +133,6 @@ public class NetworkController {
             }
         }
 
-        log.info(String.format("The expected number is %s", numberList.get(bestIndex)));
         return numberList.get(bestIndex);
     }
 
