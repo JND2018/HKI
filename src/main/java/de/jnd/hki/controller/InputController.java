@@ -8,12 +8,9 @@ import org.datavec.image.loader.NativeImageLoader;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.opencv.aruco.Aruco;
 import org.opencv.aruco.Dictionary;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Size;
+import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.core.MatOfPoint2f;
 import org.opencv.imgproc.Moments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +55,7 @@ public class InputController {
     public static Mat preprocessImg(Mat src) {
         Mat dst = new Mat();
         Imgproc.threshold(src, dst, 145, 255, Imgproc.THRESH_BINARY);
-        if (DEBUG) Imgcodecs.imwrite(DEBUGPATH + "/preprocess.png", dst);
+        if (BaseUtils.isDebug()) Imgcodecs.imwrite(DEBUGPATH + "/preprocess.png", dst);
         log.info("Preprocessing image...");
         return dst;
     }
@@ -122,7 +119,7 @@ public class InputController {
         int offsetCols = Math.round(cellOffset * cellSizeCols);
         int border = (int)cellSizeCols/12;
 
-        if (DEBUG) Imgcodecs.imwrite(DEBUGPATH + "/cutletters.png", src);
+        if (BaseUtils.isDebug()) Imgcodecs.imwrite(DEBUGPATH + "/cutletters.png", src);
 
         log.debug("cellsize: " + cellSizeRows);
         log.debug("Offset: " + offsetRows);
@@ -141,33 +138,55 @@ public class InputController {
                 );
                 log.debug(String.format("Resizing characters to %sx%s Pixels", charSize.width, charSize.height));
                 Imgproc.resize(tmp, tmp, charSize);
-                Mat tmp2 = new Mat(imgSize, tmp.type());
-                Moments moments = Imgproc.moments(tmp);
 
-                Point centerOfMass = new Point(
-                        moments.m10 / moments.m00,
-                        moments.m01 / moments.m00
-                );
-                Point centerGeom = new Point(tmp.cols(), tmp.rows());
-                Point centerDelta = new Point(
-                        Math.round(centerOfMass.x - centerGeom.x + 1),
-                        Math.round(centerOfMass.y - centerGeom.y + 1)
-                );
-                for (int u = 0; u < tmp.cols(); u++) {
-                    for (int v = 0; v < tmp.rows(); v++) {
-                        tmp2.put(
-                                (int)(v + centerDelta.y),
-                                (int)(u + centerDelta.x),
-                                tmp.get(v, u)
-                        );
-                    }
-                }
-
+                Mat tmp2 = centerImage(tmp, charSize, imgSize);
                 if (BaseUtils.isDebug()) Imgcodecs.imwrite(String.format(DEBUGPATH + "/chars/%s%s.png", row, col), tmp2);
                 dst.add(tmp2);
             }
         }
         return dst;
+    }
+
+    public static Mat centerImage(Mat src) {
+        return centerImage(src, DEFAULTCHARSIZE, DEFAULTOUTPUTSIZE);
+    }
+
+    public static Mat centerImage(Mat src, Size charSize, Size imgSize) {
+        int padding = (int)(imgSize.height - charSize.height) / 2;
+        Point centerGeom = new Point(charSize.width / 2, charSize.height / 2);
+        Moments moments = Imgproc.moments(src);
+
+        Point centerOfMass = new Point(
+                moments.m10 / moments.m00,
+                moments.m01 / moments.m00
+        );
+        Point delta = new Point(
+                centerOfMass.x - centerGeom.x,
+                centerOfMass.y - centerGeom.y
+        );
+        if (Math.abs(delta.x) == 0.5)
+            delta.x = 0;
+        if (Math.abs(delta.y) == 0.5)
+            delta.y = 0;
+
+        Mat tmp = new Mat();
+        Core.copyMakeBorder(
+                src,
+                tmp,
+                limit(padding - delta.y, 0, padding * 2),
+                limit(padding + delta.y, 0, padding * 2),
+                limit(padding - delta.x, 0, padding * 2),
+                limit(padding + delta.x, 0, padding * 2),
+                Core.BORDER_CONSTANT
+        );
+        return tmp;
+    }
+
+    public static int limit(double value, double min, double max) {
+        if (Double.isNaN(value)) {
+            return (int)Math.round(max/2);
+        }
+        return (int)Math.round(Math.min(Math.max(value, min), max));
     }
 
     public static List<INDArray> convertMatsToIDNArray(List<Mat> mats) throws IOException {
@@ -191,7 +210,7 @@ public class InputController {
     }
 
     public static List<INDArray> loadImage(String file) throws InputException {
-        if (DEBUG) {
+        if (BaseUtils.isDebug()) {
             new File(DEBUGPATH + "/chars").mkdirs();
         }
 
