@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -145,6 +146,10 @@ public class InputController {
             }
         }
         return dst;
+    }
+
+    public static Mat centerImage(ByteBuffer buffer) {
+        return centerImage(new Mat((int)DEFAULTCHARSIZE.width, (int)DEFAULTCHARSIZE.height, 0, buffer));
     }
 
     public static Mat centerImage(Mat src) {
