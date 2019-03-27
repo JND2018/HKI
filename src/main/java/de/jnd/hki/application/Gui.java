@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.apache.log4j.Logger;
+import org.bytedeco.javacpp.Loader;
+import org.bytedeco.javacpp.opencv_java;
 
 import java.io.IOException;
 
@@ -22,6 +24,7 @@ public class Gui extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Loader.load(opencv_java.class); // load native openCV functions
         log.info("Gui app loaded.");
         ViewModel.setCurrentStage(primaryStage);
         Stage stage = ViewController.openView("loadNetwork");

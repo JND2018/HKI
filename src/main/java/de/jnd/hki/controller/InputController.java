@@ -1,10 +1,7 @@
 package de.jnd.hki.controller;
 
 import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.Pointer;
-import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_java;
-import org.datavec.image.loader.NativeImageLoader;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.opencv.aruco.Aruco;
 import org.opencv.aruco.Dictionary;
@@ -194,32 +191,11 @@ public class InputController {
         return (int)Math.round(Math.min(Math.max(value, min), max));
     }
 
-    public static List<INDArray> convertMatsToIDNArray(List<Mat> mats) throws IOException {
-        List<INDArray> dst = new ArrayList<>();
-        for (Mat mat: mats) {
-            dst.add(convertMatToINDArray(mat));
-        }
-        return dst;
-    }
-
-    public static INDArray convertMatToINDArray(Mat src) throws IOException {
-        log.debug("Converting opencv Mat to INDArray...");
-        NativeImageLoader loader = new NativeImageLoader(src.rows(), src.cols(), src.channels());
-        opencv_core.Mat src2 = new opencv_core.Mat((Pointer)null) { { address = src.getNativeObjAddr(); } };
-        INDArray dst = loader.asMatrix(src2);
-
-        if (dst == null) {
-            throw new IOException("Failed to convert opencv Mat to INDArray.");
-        }
-        return dst;
-    }
-
     public static List<INDArray> loadImage(String file) throws InputException {
         if (BaseUtils.isDebug()) {
             new File(DEBUGPATH + "/chars").mkdirs();
         }
 
-        Loader.load(opencv_java.class); // load native openCV functions
         log.info("Imageloader started.");
         List<Mat> charactersMat = null;
         List<INDArray> characters;
@@ -227,8 +203,15 @@ public class InputController {
             Mat img = preprocessImg(openImg(file));
             List<Point> corners = detectAruCo(img);
             Mat imgTransformed = perspectiveTransform(img, corners);
-            charactersMat = cutLetters(imgTransformed, DEFAULTCELLCOLS, DEFAULTCELLROWS, DEFAULTCELLOFFSET, DEFAULTCHARSIZE, DEFAULTOUTPUTSIZE);
-            characters = convertMatsToIDNArray(charactersMat);
+            charactersMat = cutLetters(
+                    imgTransformed,
+                    DEFAULTCELLCOLS,
+                    DEFAULTCELLROWS,
+                    DEFAULTCELLOFFSET,
+                    DEFAULTCHARSIZE,
+                    DEFAULTOUTPUTSIZE
+            );
+            characters = BaseUtils.convertMatsToINDArray(charactersMat);
         } catch (IOException e) {
             if (charactersMat == null) {
                 log.error("Failed to load image " + file);
