@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?scenebuilder-stylesheet stylesheet.css?>
 
-<fx:root prefHeight="530.0" prefWidth="1280.0" type="javafx.scene.layout.BorderPane" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.jnd.hki.controller.FileDetectionController">
+<fx:root prefHeight="530.0" prefWidth="1280.0" type="javafx.scene.layout.BorderPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.jnd.hki.controller.FileDetectionController">
     <stylesheets>
         <URL value="@stylesheet.css" />
     </stylesheets>
@@ -26,6 +26,8 @@
                            <children>
                               <Canvas fx:id="calculatedNumberCnv" height="200.0" layoutX="14.0" layoutY="50.0" width="200.0" />
                               <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#onTestSingleFile" text="Test" />
+                              <Canvas fx:id="drawCanvas" height="200.0" layoutX="214.0" layoutY="50.0" onMouseDragged="#onMouseDragged" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" width="200.0" />
+                              <Button layoutX="214.0" layoutY="14.0" mnemonicParsing="false" onAction="#onClear" text="Clear" />
                            </children>
                         </AnchorPane>
                      </content>

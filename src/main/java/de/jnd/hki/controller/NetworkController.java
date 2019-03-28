@@ -69,7 +69,7 @@ public class NetworkController {
         log.info(String.format("Network saved under %s",file.getAbsolutePath()));
     }
 
-    public static MultiLayerConfiguration getNetworkConfigForMNIST(int seed,int hiddenOutputs , int outputs, Map<Integer, InputPreProcessor> inputPreProcessorMap) {
+    public static MultiLayerConfiguration getNetworkConfigForMNIST(int seed,int hiddenNeurons , int outputs, Map<Integer, InputPreProcessor> inputPreProcessorMap) {
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
@@ -78,16 +78,22 @@ public class NetworkController {
                 .list()
                 .layer(0, new DenseLayer.Builder()
                         .nIn(28 *28)
-                        .nOut(hiddenOutputs)
+                        .nOut(hiddenNeurons)
                         .activation(Activation.RELU)
                         .weightInit(WeightInit.XAVIER)
                         .build())
-                .layer(1, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                        .nIn(1000)
-                        .nOut(outputs)
-                        .activation(Activation.SOFTMAX)
+                .layer(1, new DenseLayer.Builder()
+                        .nIn(hiddenNeurons)
+                        .nOut(hiddenNeurons)
+                        .activation(Activation.RELU)
                         .weightInit(WeightInit.XAVIER)
                         .build())
+				.layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+						.nIn(hiddenNeurons)
+						.nOut(outputs)
+						.activation(Activation.SOFTMAX)
+						.weightInit(WeightInit.XAVIER)
+						.build())
                 .pretrain(false).backprop(true)
                 .build();
         conf.setInputPreProcessors(inputPreProcessorMap);

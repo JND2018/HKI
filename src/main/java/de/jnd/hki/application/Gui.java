@@ -1,5 +1,6 @@
 package de.jnd.hki.application;
 
+import de.jnd.hki.controller.MnistDownloader;
 import de.jnd.hki.controller.ViewController;
 import de.jnd.hki.model.ViewModel;
 import javafx.application.Application;
@@ -17,6 +18,7 @@ public class Gui extends Application {
     private static Logger log = Logger.getLogger(Gui.class);
 
     public static void main(String[] args) {
+		MnistDownloader.download();
         launch(args);
     }
 
