@@ -2,6 +2,8 @@ package de.jnd.hki.application;
 
 import de.jnd.hki.controller.BaseUtils;
 import org.apache.commons.cli.*;
+import org.bytedeco.javacpp.Loader;
+import org.bytedeco.javacpp.opencv_java;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +12,7 @@ public class App {
 
     //mode=gui,console(default)
     public static void main(String[] args) {
+        Loader.load(opencv_java.class); // load native openCV functions
         log.info("Debug: "+BaseUtils.isDebug());
         log.info("Eclipse: "+BaseUtils.isEclipse());
         log.info("IntelliJ: "+BaseUtils.isIntelliJ());
