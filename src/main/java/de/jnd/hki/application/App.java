@@ -1,6 +1,7 @@
 package de.jnd.hki.application;
 
 import de.jnd.hki.controller.BaseUtils;
+import de.jnd.hki.controller.MnistDownloader;
 import org.apache.commons.cli.*;
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.opencv_java;
@@ -14,6 +15,7 @@ public class App {
     private static Logger log = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) {
+        MnistDownloader.download();
         Loader.load(opencv_java.class); // load native openCV functions
         log.info("Debug: "+BaseUtils.isDebug());
         log.info("Eclipse: "+BaseUtils.isEclipse());
