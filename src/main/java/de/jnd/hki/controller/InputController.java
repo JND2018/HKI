@@ -1,19 +1,12 @@
 package de.jnd.hki.controller;
 
-import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.Pointer;
-import org.bytedeco.javacpp.opencv_core;
-import org.bytedeco.javacpp.opencv_java;
-import org.datavec.image.loader.NativeImageLoader;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.opencv.aruco.Aruco;
 import org.opencv.aruco.Dictionary;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Size;
+import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.core.MatOfPoint2f;
+import org.opencv.imgproc.Moments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,15 +30,16 @@ class TooFewAruCoMarkersFoundException extends Exception {
 
 public class InputController {
     private static Logger log = LoggerFactory.getLogger(InputController.class);
-    protected static boolean DEBUG = false;
     private static String DEBUGPATH = BaseUtils.getTargetLocation() + "/debugimages";
     private static final int DEFAULTCELLCOLS = 14;
     private static final int DEFAULTCELLROWS = 22;
     private static final float DEFAULTCELLOFFSET = 1.5f;
+    private static final Size DEFAULTCHARSIZE = new Size(20, 20);
     private static final Size DEFAULTOUTPUTSIZE = new Size(28, 28);
 
     public static Mat openImg(String path) throws IOException {
         log.info("Loading image " + path);
+        // read the image as greyscale
         Mat dst = Imgcodecs.imread(path, Imgcodecs.IMREAD_GRAYSCALE);
         if (dst.empty()) {
             throw new IOException();
@@ -55,9 +49,10 @@ public class InputController {
 
     public static Mat preprocessImg(Mat src) {
         Mat dst = new Mat();
-        Imgproc.threshold(src, dst, 145, 255, Imgproc.THRESH_BINARY);
-        if (DEBUG) Imgcodecs.imwrite(DEBUGPATH + "/preprocess.png", dst);
         log.info("Preprocessing image...");
+        // reduce the image to black and white only
+        Imgproc.threshold(src, dst, 145, 255, Imgproc.THRESH_BINARY);
+        if (BaseUtils.isDebug()) Imgcodecs.imwrite(DEBUGPATH + "/preprocess.png", dst);
         return dst;
     }
 
@@ -72,13 +67,16 @@ public class InputController {
             Point b = new Point(markers.get(i).get(0,1));
             Point c = new Point(markers.get(i).get(0,2));
             Point d = new Point(markers.get(i).get(0,3));
+            // calculate middle point of marker
             double x = 0.25 * (a.x + b.x + c.x + d.x);
             double y = 0.25 * (a.y + b.y + c.y + d.y);
+            // sort points by id embedded into the marker -> doesn't matter how the image is rotated
             int id = (int) ids.get(i, 0)[0];
             centers[id] = new Point(x,y);
         }
         List<Point> centersList = Arrays.asList(centers);
         if (centersList.size() <= 0) {
+            // no markers were found
             throw new NoAruCoMarkersFoundException();
         }
         log.info(String.format("Detected %s AruCo Markers", centersList.size()));
@@ -87,6 +85,7 @@ public class InputController {
 
     public static Mat perspectiveTransform(Mat src, List<Point> corners) throws TooFewAruCoMarkersFoundException{
         if (corners.size() < 4) {
+            // not all markers could be recognized
             throw new TooFewAruCoMarkersFoundException();
         }
 
@@ -111,16 +110,17 @@ public class InputController {
         return dst;
     }
 
-    public static List<Mat> cutLetters(Mat src, int cellCols, int cellRows, float cellOffset, Size size) {
+    public static List<Mat> cutLetters(Mat src, int cellCols, int cellRows, float cellOffset, Size charSize, Size imgSize) {
         List<Mat> dst = new ArrayList<>();
 
         float cellSizeRows = (float)src.rows() / (cellRows + (cellOffset * 2));
         float cellSizeCols = (float)src.cols() / (cellCols + (cellOffset * 2));
         int offsetRows = Math.round(cellOffset * cellSizeRows);
         int offsetCols = Math.round(cellOffset * cellSizeCols);
+        // add a little border to compensate for slightly twisted image
         int border = (int)cellSizeCols/12;
 
-        if (DEBUG) Imgcodecs.imwrite(DEBUGPATH + "/cutletters.png", src);
+        if (BaseUtils.isDebug()) Imgcodecs.imwrite(DEBUGPATH + "/cutletters.png", src);
 
         log.debug("cellsize: " + cellSizeRows);
         log.debug("Offset: " + offsetRows);
@@ -137,41 +137,67 @@ public class InputController {
                         x + border,
                         Math.round(x + cellSizeCols) - border
                 );
-                log.debug(String.format("Resizing characters to %sx%s Pixels", size.width, size.height));
-                Imgproc.resize(tmp, tmp, size);
-                if (DEBUG) Imgcodecs.imwrite(String.format(DEBUGPATH + "/chars/%s%s.png", row, col), tmp);
-                dst.add(tmp);
+                log.debug(String.format("Resizing characters to %sx%s Pixels", charSize.width, charSize.height));
+                Imgproc.resize(tmp, tmp, charSize);
+
+                Mat tmp2 = centerImage(tmp, charSize, imgSize);
+                if (BaseUtils.isDebug()) Imgcodecs.imwrite(String.format(DEBUGPATH + "/chars/%s%s.png", row, col), tmp2);
+                dst.add(tmp2);
             }
         }
         return dst;
     }
 
-    public static List<INDArray> convertMatsToIDNArray(List<Mat> mats) throws IOException {
-        List<INDArray> dst = new ArrayList<>();
-        for (Mat mat: mats) {
-            dst.add(convertMatToINDArray(mat));
-        }
-        return dst;
+    public static Mat centerImage(Mat src) {
+        return centerImage(src, DEFAULTCHARSIZE, DEFAULTOUTPUTSIZE);
     }
 
-    public static INDArray convertMatToINDArray(Mat src) throws IOException {
-        log.debug("Converting opencv Mat to INDArray...");
-        NativeImageLoader loader = new NativeImageLoader(src.rows(), src.cols(), src.channels());
-        opencv_core.Mat src2 = new opencv_core.Mat((Pointer)null) { { address = src.getNativeObjAddr(); } };
-        INDArray dst = loader.asMatrix(src2);
+    public static Mat centerImage(Mat src, Size charSize, Size imgSize) {
+        int padding = (int)(imgSize.height - charSize.height) / 2;
+        Point centerGeom = new Point(charSize.width / 2, charSize.height / 2);
+        Moments moments = Imgproc.moments(src);
 
-        if (dst == null) {
-            throw new IOException("Failed to convert opencv Mat to INDArray.");
+        Point centerOfMass = new Point(
+                moments.m10 / moments.m00,
+                moments.m01 / moments.m00
+        );
+        // calculate how much the center of mass differs from the geometrical center
+        Point delta = new Point(
+                centerOfMass.x - centerGeom.x,
+                centerOfMass.y - centerGeom.y
+        );
+        // workaround for rounding problems when delta.[xy] == [-]0.5
+        if (Math.abs(delta.x) == 0.5)
+            delta.x = 0;
+        if (Math.abs(delta.y) == 0.5)
+            delta.y = 0;
+
+        Mat tmp = new Mat();
+        // add a border to the char, border width gets adjusted so that the char gets centered
+        Core.copyMakeBorder(
+                src,
+                tmp,
+                limit(padding - delta.y, 0, padding * 2),
+                limit(padding + delta.y, 0, padding * 2),
+                limit(padding - delta.x, 0, padding * 2),
+                limit(padding + delta.x, 0, padding * 2),
+                Core.BORDER_CONSTANT
+        );
+        return tmp;
+    }
+
+    public static int limit(double value, double min, double max) {
+        if (Double.isNaN(value)) {
+            return (int)Math.round(max/2);
         }
-        return dst;
+        return (int)Math.round(Math.min(Math.max(value, min), max));
     }
 
     public static List<INDArray> loadImage(String file) throws InputException {
-        if (DEBUG) {
+        if (BaseUtils.isDebug()) {
             new File(DEBUGPATH + "/chars").mkdirs();
         }
 
-        Loader.load(opencv_java.class); // load native openCV functions
         log.info("Imageloader started.");
         List<Mat> charactersMat = null;
         List<INDArray> characters;
@@ -179,8 +205,15 @@ public class InputController {
             Mat img = preprocessImg(openImg(file));
             List<Point> corners = detectAruCo(img);
             Mat imgTransformed = perspectiveTransform(img, corners);
-            charactersMat = cutLetters(imgTransformed, DEFAULTCELLCOLS, DEFAULTCELLROWS, DEFAULTCELLOFFSET, DEFAULTOUTPUTSIZE);
-            characters = convertMatsToIDNArray(charactersMat);
+            charactersMat = cutLetters(
+                    imgTransformed,
+                    DEFAULTCELLCOLS,
+                    DEFAULTCELLROWS,
+                    DEFAULTCELLOFFSET,
+                    DEFAULTCHARSIZE,
+                    DEFAULTOUTPUTSIZE
+            );
+            characters = BaseUtils.convertMatsToINDArray(charactersMat);
         } catch (IOException e) {
             if (charactersMat == null) {
                 log.error("Failed to load image " + file);

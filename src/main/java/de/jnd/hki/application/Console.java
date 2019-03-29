@@ -1,16 +1,7 @@
 package de.jnd.hki.application;
 
-import de.jnd.hki.controller.NetworkController;
-import de.jnd.hki.model.ConsoleModel;
-import de.jnd.hki.model.NetworkModel;
-import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
-import org.datavec.image.loader.NativeImageLoader;
-import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
-import org.nd4j.linalg.api.ndarray.INDArray;
-
-import java.io.File;
-import java.io.IOException;
 
 public class Console {
     private static Logger log = Logger.getLogger(Console.class);
