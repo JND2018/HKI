@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class LoadNetworkController {
     private static Logger log = LoggerFactory.getLogger(LoadNetworkController.class);
@@ -37,7 +38,12 @@ public class LoadNetworkController {
             return row ;
         });
 
-        File[] models = new File(BaseUtils.getTargetLocation() + "/networks/").listFiles();
+        File[] models = new File[0];
+        try {
+            models = new File(BaseUtils.getJarFolder() + "/networks/").listFiles();
+        } catch (URISyntaxException e) {
+            log.error("Failed to retrieve jar location");
+        }
         ObservableList<File> data = FXCollections.observableArrayList();
         if (models != null) {
             data.addAll(models);
@@ -50,7 +56,12 @@ public class LoadNetworkController {
     @FXML
     void onAdd(ActionEvent event) {
         MultiLayerNetwork newNetwork = NetworkController.createNetwork();
-        String generatedLocation = String.format("%s/networks/%s.zip", BaseUtils.getTargetLocation(), RandomStringUtils.random(15, true, false));
+        String generatedLocation = null;
+        try {
+            generatedLocation = String.format("%s/networks/%s.zip", BaseUtils.getJarFolder(), RandomStringUtils.random(15, true, false));
+        } catch (URISyntaxException e) {
+            log.error("Failed to retrieve jar location");
+        }
         try {
             NetworkController.saveNetwork(newNetwork, generatedLocation, true);
         } catch (IOException e) {

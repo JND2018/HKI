@@ -13,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.function.Consumer;
 
 public class TrainingController {
@@ -60,9 +61,11 @@ public class TrainingController {
 
             if (saveCheckbox.isSelected()) {
                 try {
-                    NetworkController.saveNetwork(ViewModel.getCurrentNetworkModel().getNetwork(), String.format("%s/networks/%s.zip", BaseUtils.getTargetLocation(), networkName.getText()), true);
+                    NetworkController.saveNetwork(ViewModel.getCurrentNetworkModel().getNetwork(), String.format("%s/networks/%s.zip", BaseUtils.getJarFolder(), networkName.getText()), true);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("Couldn't save network");
+                } catch (URISyntaxException e) {
+                    log.error("Failed to retrieve jar location");
                 }
             }
             indicatorToggle.accept(false);

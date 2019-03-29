@@ -1,7 +1,5 @@
 package de.jnd.hki.controller;
 
-import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.opencv_java;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.opencv.aruco.Aruco;
 import org.opencv.aruco.Dictionary;
@@ -14,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +30,6 @@ class TooFewAruCoMarkersFoundException extends Exception {
 
 public class InputController {
     private static Logger log = LoggerFactory.getLogger(InputController.class);
-    protected static boolean DEBUG = false;
     private static String DEBUGPATH = BaseUtils.getTargetLocation() + "/debugimages";
     private static final int DEFAULTCELLCOLS = 14;
     private static final int DEFAULTCELLROWS = 22;
@@ -43,6 +39,7 @@ public class InputController {
 
     public static Mat openImg(String path) throws IOException {
         log.info("Loading image " + path);
+        // read the image as greyscale
         Mat dst = Imgcodecs.imread(path, Imgcodecs.IMREAD_GRAYSCALE);
         if (dst.empty()) {
             throw new IOException();
@@ -52,9 +49,10 @@ public class InputController {
 
     public static Mat preprocessImg(Mat src) {
         Mat dst = new Mat();
+        log.info("Preprocessing image...");
+        // reduce the image to black and white only
         Imgproc.threshold(src, dst, 145, 255, Imgproc.THRESH_BINARY);
         if (BaseUtils.isDebug()) Imgcodecs.imwrite(DEBUGPATH + "/preprocess.png", dst);
-        log.info("Preprocessing image...");
         return dst;
     }
 
@@ -69,13 +67,16 @@ public class InputController {
             Point b = new Point(markers.get(i).get(0,1));
             Point c = new Point(markers.get(i).get(0,2));
             Point d = new Point(markers.get(i).get(0,3));
+            // calculate middle point of marker
             double x = 0.25 * (a.x + b.x + c.x + d.x);
             double y = 0.25 * (a.y + b.y + c.y + d.y);
+            // sort points by id embedded into the marker -> doesn't matter how the image is rotated
             int id = (int) ids.get(i, 0)[0];
             centers[id] = new Point(x,y);
         }
         List<Point> centersList = Arrays.asList(centers);
         if (centersList.size() <= 0) {
+            // no markers were found
             throw new NoAruCoMarkersFoundException();
         }
         log.info(String.format("Detected %s AruCo Markers", centersList.size()));
@@ -84,6 +85,7 @@ public class InputController {
 
     public static Mat perspectiveTransform(Mat src, List<Point> corners) throws TooFewAruCoMarkersFoundException{
         if (corners.size() < 4) {
+            // not all markers could be recognized
             throw new TooFewAruCoMarkersFoundException();
         }
 
@@ -115,6 +117,7 @@ public class InputController {
         float cellSizeCols = (float)src.cols() / (cellCols + (cellOffset * 2));
         int offsetRows = Math.round(cellOffset * cellSizeRows);
         int offsetCols = Math.round(cellOffset * cellSizeCols);
+        // add a little border to compensate for slightly twisted image
         int border = (int)cellSizeCols/12;
 
         if (BaseUtils.isDebug()) Imgcodecs.imwrite(DEBUGPATH + "/cutletters.png", src);
@@ -145,10 +148,6 @@ public class InputController {
         return dst;
     }
 
-    public static Mat centerImage(ByteBuffer buffer) {
-        return centerImage(new Mat((int)DEFAULTCHARSIZE.width, (int)DEFAULTCHARSIZE.height, 0, buffer));
-    }
-
     public static Mat centerImage(Mat src) {
         return centerImage(src, DEFAULTCHARSIZE, DEFAULTOUTPUTSIZE);
     }
@@ -162,16 +161,19 @@ public class InputController {
                 moments.m10 / moments.m00,
                 moments.m01 / moments.m00
         );
+        // calculate how much the center of mass differs from the geometrical center
         Point delta = new Point(
                 centerOfMass.x - centerGeom.x,
                 centerOfMass.y - centerGeom.y
         );
+        // workaround for rounding problems when delta.[xy] == [-]0.5
         if (Math.abs(delta.x) == 0.5)
             delta.x = 0;
         if (Math.abs(delta.y) == 0.5)
             delta.y = 0;
 
         Mat tmp = new Mat();
+        // add a border to the char, border width gets adjusted so that the char gets centered
         Core.copyMakeBorder(
                 src,
                 tmp,

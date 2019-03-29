@@ -1,40 +1,71 @@
 package de.jnd.hki.application;
 
-import org.apache.commons.cli.*;
+import de.jnd.hki.controller.NetworkController;
+import de.jnd.hki.model.ConsoleModel;
+import de.jnd.hki.model.NetworkModel;
+import org.apache.commons.cli.CommandLine;
 import org.apache.log4j.Logger;
-import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.opencv_java;
+import org.datavec.image.loader.NativeImageLoader;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.nd4j.linalg.api.ndarray.INDArray;
+
+import java.io.File;
+import java.io.IOException;
 
 public class Console {
     private static Logger log = Logger.getLogger(Console.class);
 
-    public static void main(String[] args) {
-        Loader.load(opencv_java.class); // load native openCV functions
+    public static void main(CommandLine cmd) {
         log.info("Console app loaded.");
 
-        Options options = new Options();
 
-        Option input = new Option("i", "input", true, "input file");
-        input.setRequired(true);
-        options.addOption(input);
-
-        Option output = new Option("o", "output", true, "output file");
-        output.setRequired(true);
-        options.addOption(output);
-
-        CommandLineParser parser = new DefaultParser();
-        HelpFormatter formatter = new HelpFormatter();
-        CommandLine cmd = null;
-
-        try {
-            cmd = parser.parse(options, args);
-        } catch (ParseException e) {
-            System.out.println(e.getMessage());
-            formatter.printHelp("utility-name", options);
-
-            System.exit(1);
+        if (cmd.hasOption("network")) {
+            try {
+                ConsoleModel.setCurrentNetworkModel(new NetworkModel(NetworkController.loadNetwork(cmd.getOptionValue("network"))));
+            } catch (IOException e) {
+                log.error("Couldn't load network");
+            }
+        } else {
+            ConsoleModel.setCurrentNetworkModel(new NetworkModel(NetworkController.createNetwork()));
         }
 
+        if (cmd.hasOption("train")) {
+            try {
+                NetworkController.trainNetwork(ConsoleModel.getCurrentNetworkModel().getNetwork(), Integer.parseInt(cmd.getOptionValue("train")), 100, 128);
+            } catch (IOException e) {
+                log.error("Couldn't train network");
+            }
+        }
 
+        if (cmd.hasOption("input")) {
+            NativeImageLoader loader = ConsoleModel.getCurrentNetworkModel().getLoader();
+            MultiLayerNetwork networkModel = ConsoleModel.getCurrentNetworkModel().getNetwork();
+
+            INDArray image = null;
+            try {
+                image = loader.asMatrix(new File(cmd.getOptionValue("input")));
+
+            } catch (IOException e) {
+                log.error("Couldn't train image");
+            }
+            int number = NetworkController.testImage(image, networkModel);
+            log.info(String.format("Expected Number: %s",number));
+        }
+
+        if(cmd.hasOption("save")){
+            try {
+                NetworkController.saveNetwork(ConsoleModel.getCurrentNetworkModel().getNetwork(),cmd.getOptionValue("save"),true);
+            } catch (IOException e) {
+                log.error("Couldn't save network");
+            }
+        }
+
+        if(cmd.hasOption("stats")){
+            try {
+                log.info(NetworkController.trainNetwork(ConsoleModel.getCurrentNetworkModel().getNetwork(),1,0,1));
+            } catch (IOException e) {
+                log.error("Couldn't train network");
+            }
+        }
     }
 }

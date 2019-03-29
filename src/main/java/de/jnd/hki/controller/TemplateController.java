@@ -9,14 +9,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import org.apache.log4j.Logger;
-import org.datavec.image.loader.NativeImageLoader;
-import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.cpu.nativecpu.NDArray;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TemplateController {
 
@@ -30,7 +24,6 @@ public class TemplateController {
 
     @FXML
     private BorderPane innerPane;
-
 
     @FXML
     public void initialize() {
